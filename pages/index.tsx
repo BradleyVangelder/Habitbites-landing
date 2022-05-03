@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useState } from 'react';
+import ConfettiExplosion from 'react-confetti-explosion';
 const mailchimp = require('@mailchimp/mailchimp_marketing');
 
 mailchimp.setConfig({
@@ -8,11 +9,20 @@ mailchimp.setConfig({
   server: process.env.NEXT_MAILCHIMP_INSTANCE,
 });
 
+const tinyExplodeProps = {
+  force: 0.4,
+  duration: 2000,
+  particleCount: 30,
+  floorHeight: 500,
+  floorWidth: 300
+}
+
 const Home: NextPage = () => {
 
   const [email,setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [isExploding, setIsExploding] = useState(false);
 
   const subscribe = async (e: any) => {
     e.preventDefault();
@@ -35,9 +45,10 @@ const Home: NextPage = () => {
       return;
     }
 
+    setIsExploding(true);
     setError('');
     setEmail('');
-    setMessage('You are now in for the best habit app ever created! 🎉 You will now get notified on every update.');
+    setMessage("You're now in for the best habit community ever created! 🎉");
   };
 
   return (
@@ -65,7 +76,7 @@ const Home: NextPage = () => {
                   <input onChange={e => setEmail(e.target.value)} value={email} type="text" className='rounded-full ring-project-text text-project-text ring-1 px-6 py-3 w-full md:w-7/12 text-xs z-20' placeholder='hello@habitbites.com'/>
                   <button onClick={e => subscribe(e)} className='rounded-full bg-project-text text-white font-semibold text-xs py-3 px-10 z-20'>Get notified!</button>
                 </div>
-                : <p className='mt-10 font-light text-sm w-full rounded-lg'>{message}</p>
+                : <p className='xl:w-3/4 mt-10 font-light text-sm rounded-lg bg-project-main py-4 px-8 text-white'>{message}</p>
               }
               {
                 error !== '' &&
