@@ -1,19 +1,43 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { useState } from 'react';
 const mailchimp = require('@mailchimp/mailchimp_marketing');
 
-const Home: NextPage = () => {
-  mailchimp.setConfig({
-    apiKey: process.env.MAILCHIMP_API_KEY,
-    server: process.env.MAILCHIMP_INSTANCE,
-  });
+mailchimp.setConfig({
+  apiKey: process.env.NEXT_MAILCHIMP_API_KEY,
+  server: process.env.NEXT_MAILCHIMP_INSTANCE,
+});
 
-  const addMember = async () => {
-    await mailchimp.lists.setListMember(
-      'test',
-      'bradley.vangelder@icloud.com'
-    )
-  }
+const Home: NextPage = () => {
+
+  const [email,setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+
+  const subscribe = async (e: any) => {
+    e.preventDefault();
+
+    const res = await fetch('/api/subscribe', {
+      body: JSON.stringify({
+        email: email
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'POST'
+    });
+
+    const { error } = await res.json();
+
+    if (error) {
+      setError('Oops... something went wrong. Try again later');
+
+      return;
+    }
+
+    setEmail('');
+    setMessage('You are now in for the best habit app ever created! 🎉 You will now get notified on every update.');
+  };
 
   return (
     <div className='bg-project-background h-screen overflow-hidden'>
@@ -25,7 +49,7 @@ const Home: NextPage = () => {
       </Head>
 
       <div className='h-screen relative overflow-y-hidden'>
-        <div className='container mx-auto p-8 lg:p-0 h-screen'>
+        <div className='container mx-auto p-8 lg:p-0 h-screen z-40'>
           <nav className='py-8'>
             <img src='branding/habitbites.svg' className='w-1/3 md:w-auto'/>
           </nav>
@@ -35,18 +59,25 @@ const Home: NextPage = () => {
               <h1 className='text-2xl md:text-3xl xl:text-5xl font-bold font-ivy text-project-text xl:leading-snug'>
                 The number one app that holds you <span className='text-project-main'>accountable</span> to your habits!
               </h1>
-              <div className='w-full flex flex-col md:flex-row gap-3 mt-10'>
-                <input type="text" className='rounded-full ring-project-text text-project-text ring-1 px-6 py-3 w-full md:w-7/12 text-xs' placeholder='hello@habitbites.com'/>
-                <button className='rounded-full bg-project-text text-white font-semibold text-xs py-3 px-10'>Get notified!</button>
-              </div>
+              { message === '' ?
+                <div className='w-full flex flex-col md:flex-row gap-3 mt-10'>
+                  <input onChange={e => setEmail(e.target.value)} value={email} type="text" className='rounded-full ring-project-text text-project-text ring-1 px-6 py-3 w-full md:w-7/12 text-xs z-20' placeholder='hello@habitbites.com'/>
+                  <button onClick={e => subscribe(e)} className='rounded-full bg-project-text text-white font-semibold text-xs py-3 px-10 z-20'>Get notified!</button>
+                </div>
+                : <p className='mt-10 font-light text-sm w-full rounded-lg'>{message}</p>
+              }
+              {
+                error !== '' &&
+                <p className='text-red-500 text-sm mt-2'>{error}</p>
+              }
             </div>
             <div className='col-span-2 lg:col-span-1 relative mt-10 lg:mt-0'>
               <img src='assets/graphic.svg' />
             </div>
           </main>
         </div>
-        <div className='absolute w-screen -bottom-48 left-0'>
-          <img src='assets/lines.svg'/>
+        <div className='absolute w-screen -bottom-48 left-0 z-10'>
+          <img draggable='false' src='assets/lines.svg' className='z-0'/>
         </div>
       </div>
     </div>
