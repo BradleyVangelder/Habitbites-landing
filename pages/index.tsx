@@ -51,7 +51,7 @@ const Home: NextPage = () => {
       <div className='h-screen relative overflow-y-hidden'>
         <div className='container mx-auto p-8 lg:p-0 h-screen z-40'>
           <nav className='py-8'>
-            <img src='branding/habitbites.svg' className='w-1/3 md:w-auto'/>
+            <img src='assets/habitbites.svg' className='w-1/3 md:w-auto'/>
           </nav>
 
           <main className='grid grid-cols-2 h-3/4 justify-center items-center gap-10'>
