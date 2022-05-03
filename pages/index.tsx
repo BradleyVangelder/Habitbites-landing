@@ -35,6 +35,7 @@ const Home: NextPage = () => {
       return;
     }
 
+    setError('');
     setEmail('');
     setMessage('You are now in for the best habit app ever created! 🎉 You will now get notified on every update.');
   };
