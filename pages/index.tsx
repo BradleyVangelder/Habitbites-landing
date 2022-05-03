@@ -92,6 +92,7 @@ const Home: NextPage = () => {
           <img draggable='false' src='assets/lines.svg' className='z-0'/>
         </div>
       </div>
+      <script async src="https://cdn.splitbee.io/sb.js"></script>
     </div>
   )
 }
